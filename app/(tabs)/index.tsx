@@ -56,14 +56,6 @@ export default function HomeScreen() {
   const renderItem = ({ item, index }: any) => (
     <View style={styles.screenContainer}>
       <Image source={item.image} style={styles.mainIcon} />
-      <View style={styles.navigation}>
-        {screens.map((_, index) => (
-          <View
-            key={index}
-            style={[styles.normal, currentScreen === index && styles.active]}
-          />
-        ))}
-      </View>
       <Text style={styles.text}>{item.text}</Text>
     </View>
   );
@@ -88,6 +80,16 @@ export default function HomeScreen() {
         keyExtractor={(_, index) => index.toString()}
         onScroll={handleScroll}
       />
+      <View style={styles.bottomContainer}>
+        <View style={styles.navigation}>
+          {screens.map((_, index) => (
+            <View
+              key={index}
+              style={[styles.normal, currentScreen === index && styles.active]}
+            />
+          ))}
+        </View>
+      </View>
 
       <View style={styles.buttonWrapper}>
         <View style={styles.button}>
@@ -112,13 +114,17 @@ const styles = StyleSheet.create({
   screenContainer: {
     width: SCREEN_WIDTH,
     alignItems: "center",
-    paddingTop: 200,
+    paddingTop: 150,
   },
   navigation: {
-    marginTop: 89,
-    marginBottom: 22,
     flexDirection: "row",
     gap: 6,
+  },
+  bottomContainer: {
+    position: "absolute",
+    bottom: 400,
+    width: "100%",
+    alignItems: "center",
   },
   active: {
     backgroundColor: "#304FFE",
@@ -144,6 +150,7 @@ const styles = StyleSheet.create({
     height: 260,
     resizeMode: "contain",
     borderRadius: 12,
+    marginBottom: 150,
   },
   buttonWrapper: {
     width: "100%",
