@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useState, useRef } from "react";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
+const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const [currentScreen, setCurrentScreen] = useState(0);
@@ -38,7 +38,7 @@ export default function HomeScreen() {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
-    const screenIndex = Math.round(scrollPosition / SCREEN_WIDTH);
+    const screenIndex = Math.round(scrollPosition / width);
     setCurrentScreen(screenIndex);
   };
 
@@ -112,9 +112,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   screenContainer: {
-    width: SCREEN_WIDTH,
+    width: width,
     alignItems: "center",
-    paddingTop: 150,
+    paddingTop: height * 0.2,
   },
   navigation: {
     flexDirection: "row",
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     position: "absolute",
-    bottom: 400,
+    bottom: height * 0.42,
     width: "100%",
     alignItems: "center",
   },
@@ -144,7 +144,8 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     lineHeight: 41,
     textAlign: "center",
-    maxWidth: 300,
+    maxWidth: 350,
+    fontFamily: "PoppinsSemiBold",
   },
   mainIcon: {
     height: 260,
