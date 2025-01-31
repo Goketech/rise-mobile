@@ -1,74 +1,170 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Platform,
+  View,
+  Text,
+  Button,
+  FlatList,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from "react-native";
+import { useState, useRef } from "react";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
+  const [currentScreen, setCurrentScreen] = useState(0);
+  const flatListRef = useRef<any>(null);
+
+  const screens = [
+    {
+      image: require("@/assets/images/trust.png"),
+      text: "Trusted by millions of people, part of one part",
+      buttonText: "Next",
+    },
+    {
+      image: require("@/assets/images/send.png"),
+      text: "Spend money abroad, and track your expense",
+      buttonText: "Next",
+    },
+    {
+      image: require("@/assets/images/receive.png"),
+      text: "Receive Money From Anywhere In The World",
+      buttonText: "Get Started",
+    },
+  ];
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const screenIndex = Math.round(scrollPosition / width);
+    setCurrentScreen(screenIndex);
+  };
+
+  const scrollToNext = () => {
+    if (currentScreen < screens.length - 1) {
+      const nextScreen = currentScreen + 1;
+      flatListRef.current?.scrollToIndex({
+        index: nextScreen,
+        animated: true,
+      });
+      setCurrentScreen(nextScreen);
+    }
+  };
+
+  const renderItem = ({ item, index }: any) => (
+    <View style={styles.screenContainer}>
+      <Image source={item.image} style={styles.mainIcon} />
+      <Text style={styles.text}>{item.text}</Text>
+    </View>
+  );
+
+  const [index, setCurrentIndex] = useState(0);
+
+  const handleNext = () => {
+    if (index < screens.length - 1) {
+      setCurrentIndex(index + 1);
+    }
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <FlatList
+        ref={flatListRef}
+        data={screens}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        renderItem={renderItem}
+        keyExtractor={(_, index) => index.toString()}
+        onScroll={handleScroll}
+      />
+      <View style={styles.bottomContainer}>
+        <View style={styles.navigation}>
+          {screens.map((_, index) => (
+            <View
+              key={index}
+              style={[styles.normal, currentScreen === index && styles.active]}
+            />
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.buttonWrapper}>
+        <View style={styles.button}>
+          <Button
+            onPress={scrollToNext}
+            title={screens[currentScreen].buttonText}
+            color="#fff"
+            accessibilityLabel="next"
+          />
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  screenContainer: {
+    width: width,
+    alignItems: "center",
+    paddingTop: height * 0.2,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  navigation: {
+    flexDirection: "row",
+    gap: 6,
+  },
+  bottomContainer: {
+    position: "absolute",
+    bottom: height * 0.42,
+    width: "100%",
+    alignItems: "center",
+  },
+  active: {
+    backgroundColor: "#304FFE",
+    width: 16,
+    height: 8,
+    borderRadius: 19,
+  },
+  normal: {
+    width: 37,
+    height: 8,
+    borderRadius: 19,
+    backgroundColor: "#D0D0D0",
+  },
+  text: {
+    color: "#2A2A2A",
+    fontSize: 34,
+    fontWeight: 600,
+    lineHeight: 41,
+    textAlign: "center",
+    maxWidth: 350,
+    fontFamily: "PoppinsSemiBold",
+  },
+  mainIcon: {
+    height: 260,
+    resizeMode: "contain",
+    borderRadius: 12,
+    marginBottom: 150,
+  },
+  buttonWrapper: {
+    width: "100%",
+    paddingBottom: 64,
+  },
+  button: {
+    marginLeft: 17,
+    marginRight: 17,
+    backgroundColor: "#304FFE",
+    borderWidth: 1,
+    borderColor: "transparent",
+    color: "#fff",
+    borderRadius: 50,
+    padding: 10,
   },
 });
