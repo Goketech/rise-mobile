@@ -18,6 +18,10 @@ export default function RootLayout() {
     PoppinsMedium: require('../assets/fonts/Poppins-Medium.ttf'),
     PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
     PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+    Gilroy: require("../assets/fonts/Gilroy-Regular.ttf"),
+    GilroyBold: require("../assets/fonts/Gilroy-Bold.ttf"),
+    GilroyMedium: require("../assets/fonts/Gilroy-Medium.ttf"),
+    GilroySemi: require("../assets/fonts/Gilroy-SemiBold.ttf"),
   });
 
   useEffect(() => {
