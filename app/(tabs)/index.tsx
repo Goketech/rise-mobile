@@ -25,7 +25,7 @@ export default function HomeScreen() {
     useEffect(() => {
         // Navigate to WelcomeScreen after 2 seconds
         const timer = setTimeout(() => {
-            router.replace("/welcome"); // Ensure the Welcome screen exists
+            router.push("/welcome"); // Ensure the Welcome screen exists
         }, 2000);
 
         return () => clearTimeout(timer); // Cleanup timeout if component unmounts
