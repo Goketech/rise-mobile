@@ -1,11 +1,14 @@
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, Dimensions } from "react-native";
 import Continue from "./icons/Continue";
 import { StyleSheet } from "react-native";
 type Props = {
   text?: string;
   onPress: () => void;
 };
+
+const { width, height } = Dimensions.get("window");
+
 const Next = ({ text, onPress }: Props) => {
   return (
     <View style={styles.container}>
@@ -19,7 +22,7 @@ const Next = ({ text, onPress }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 200,
+    marginTop: height - 500,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

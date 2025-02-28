@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
+  KeyboardAvoidingView,
+  SafeAreaView,
 } from "react-native";
 import { Button } from "@/components/Button";
 import { router } from "expo-router";
@@ -26,63 +29,70 @@ export default function Phone() {
   const [visible, setVisible] = useState(false);
 
   const handleContinue = () => {
-    // Add phone number validation logic here
     router.push("/otp");
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{ backgroundColor: "#fcfcfc" }}>
-        <ImageBackground
-          source={require("@/assets/images/blur.png")}
-          style={styles.background}
-        >
-          <View>
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.goBack}
-            >
-              <BackSvg width={100} height={100} fill="#181725" />
-            </TouchableOpacity>
-            <View style={styles.content}>
-              <Text style={styles.title}>Enter your mobile number</Text>
-              <Text style={styles.subtitle}>Mobile number </Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={{ backgroundColor: "#fcfcfc" }}>
+          <ImageBackground
+            source={require("@/assets/images/blur.png")}
+            style={styles.background}
+          >
+            <View>
+              <TouchableOpacity
+                onPress={() => router.back()}
+                style={styles.goBack}
+              >
+                <BackSvg width={100} height={100} fill="#181725" />
+              </TouchableOpacity>
+              <View style={styles.content}>
+                <Text style={styles.title}>Enter your mobile number</Text>
+                <Text style={styles.subtitle}>Mobile number </Text>
 
-              <View style={styles.inputContainer}>
-                <TouchableOpacity
-                  onPress={() => setVisible(true)}
-                  style={styles.countrySelector}
-                >
-                  <CountryFlag isoCode={countryCode.toLowerCase()} size={25} />
-                  <Text style={styles.countryCodeText}>+{callingCode}</Text>
-                </TouchableOpacity>
-                <TextInput
-                  style={styles.input}
-                  keyboardType="phone-pad"
-                  value={phoneNumber}
-                  onChangeText={setPhoneNumber}
-                />
+                <View style={styles.inputContainer}>
+                  <TouchableOpacity
+                    onPress={() => setVisible(true)}
+                    style={styles.countrySelector}
+                  >
+                    <CountryFlag
+                      isoCode={countryCode.toLowerCase()}
+                      size={25}
+                    />
+                    <Text style={styles.countryCodeText}>+{callingCode}</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.input}
+                    keyboardType="phone-pad"
+                    value={phoneNumber}
+                    onChangeText={setPhoneNumber}
+                  />
+                </View>
+
+                <Next onPress={handleContinue} />
               </View>
-
-              <Next onPress={handleContinue} />
             </View>
-          </View>
-        </ImageBackground>
-        <CountryPicker
-          visible={visible}
-          withFlag
-          withCallingCode
-          withFilter
-          withAlphaFilter
-          withEmoji
-          onClose={() => setVisible(false)}
-          onSelect={(country) => {
-            setCountryCode(country.cca2);
-            setCallingCode(country.callingCode[0]);
-          }}
-        />
-      </View>
-    </TouchableWithoutFeedback>
+          </ImageBackground>
+          <CountryPicker
+            visible={visible}
+            withFlag
+            withCallingCode
+            withFilter
+            withAlphaFilter
+            withEmoji
+            onClose={() => setVisible(false)}
+            onSelect={(country) => {
+              setCountryCode(country.cca2);
+              setCallingCode(country.callingCode[0]);
+            }}
+          />
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -94,18 +104,14 @@ const styles = StyleSheet.create({
   goBack: { padding: 25, position: "absolute", top: 40, left: 10, zIndex: 2 },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   content: {
-    // backgroundColor: "#fcfcfc",
     marginTop: 120,
     padding: 20,
     zIndex: 0,
-    // height: '100%'
   },
   title: {
     fontSize: 24,
-    // fontWeight: "bold",
     marginBottom: 30,
     color: "#333",
     fontFamily: "GilroyMedium",
