@@ -78,12 +78,6 @@ export default function GetStarted() {
                   color="#fbfbfb"
                   style={styles.icon}
                 />
-                // <MaterialCommunityIcons
-                //   name="google"
-                //   size={24}
-                //   color="white"
-                //   style={styles.icon}
-                // />
               }
             />
 
@@ -99,20 +93,9 @@ export default function GetStarted() {
                   color="#fbfbfb"
                   style={styles.icon}
                 />
-                // <MaterialCommunityIcons
-                //   name="facebook"
-                //   size={24}
-                //   color="#fff"
-                //   style={styles.icon}
-                // />
               }
             />
 
-            {/* <Button
-            title="Continue with Phone"
-            onPress={handlePhoneSignIn}
-            style={styles.phoneButton}
-          /> */}
           </View>
         </View>
       </View>
@@ -129,9 +112,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBFBFB",
   },
   content: {
-    // marginTop: 20,
-    // alignContent: "center",
-    // justifyContent: "center",
     backgroundColor: "#FBFBFB",
     zIndex: 1,
     flex: 1,
@@ -184,12 +164,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   icon: {
-    // marginLeft: -30,
     marginRight: 25,
   },
   countryCode: {
-    // backgroundColor: "#f5f5f5",
-    // padding: 15,
     borderRadius: 8,
     marginRight: 10,
     justifyContent: "center",
@@ -203,7 +180,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    // backgroundColor: "#f5f5f5",
     padding: 15,
     borderRadius: 8,
     fontSize: 16,
