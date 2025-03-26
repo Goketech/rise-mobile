@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Stack } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 
@@ -12,28 +12,18 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'dark'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: { display: 'none' },
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+    <Stack
+    screenOptions={{
+      headerShown: false,
+      animation: "slide_from_right",
+    }}>
+      <Stack.Screen name='index'/>
+      <Stack.Screen name='get-started'/>
+      <Stack.Screen name='signup'/>
+      <Stack.Screen name='login'/>
+      <Stack.Screen name='otp'/>
+      <Stack.Screen name='location'/>
+      <Stack.Screen name='phone'/>
+    </Stack>
   );
 }
