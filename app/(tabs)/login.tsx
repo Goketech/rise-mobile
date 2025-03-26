@@ -10,12 +10,18 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Button } from "@/components/Button";
 import { router } from "expo-router";
 import BackSvg from "@/components/icons/Back";
 import Carrot from "@/components/icons/Carrot";
 import Svg, { Path } from "react-native-svg";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "@/app/store/authSlice";
+import { RootState, AppDispatch } from "@/app/store/store";
+import { FONTS } from "@/assets/styles";
 
 interface EyeProps {
   color?: string;
@@ -55,27 +61,52 @@ const EyeIcon = ({ color = "#8E8E93", isOpen }: EyeProps) => (
 
 const { width, height } = Dimensions.get("window");
 
-export default function Login ({
+export default function Login({
   onBlur,
   onFocus,
   returnKeyType = "done",
 }: any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const authState = useSelector((state: RootState) => state.auth);
 
-  const handleLogin = () => {
-    // Implement login logic here
-    console.log("Login attempted with:", email, password);
-    router.push("/");
+  const handleLogin = async () => {
+    // Validate input
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const resultAction = await dispatch(
+        loginUser({ username: email, password })
+      );
+
+      if (loginUser.fulfilled.match(resultAction)) {
+        console.log("Login successful");
+        router.push("/main/home");
+      } else if (loginUser.rejected.match(resultAction)) {
+        setError((resultAction.payload as string) || "Login failed");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignUp = () => {
     router.push("/signup");
   };
-
-  const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = (e: any) => {
     setIsFocused(true);
@@ -135,6 +166,7 @@ export default function Login ({
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
                     autoCorrect={false}
+                    placeholder="password"
                     placeholderTextColor="#A0A0A0"
                     autoComplete="password"
                     textContentType="password"
@@ -161,19 +193,28 @@ export default function Login ({
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
 
+              {/* Error Message */}
+              {error && <Text style={styles.errorText}>{error}</Text>}
+
               {/* Login Button */}
               <Button
-                title="Login"
+                title={isLoading ? "Logging in..." : "Login"}
                 onPress={handleLogin}
                 style={styles.button}
+                disabled={isLoading}
               />
+              {isLoading && (
+                <ActivityIndicator
+                  style={{ marginTop: 10 }}
+                  color="#55B277"
+                  size="small"
+                />
+              )}
 
               {/* Sign Up Link */}
               <View style={styles.signupContainer}>
                 <Text style={styles.signupText}>Don't have an account? </Text>
-                <TouchableOpacity
-                  onPress={() => router.push("/signup")}
-                >
+                <TouchableOpacity onPress={() => router.push("/signup")}>
                   <Text style={styles.signupLink}>Signup</Text>
                 </TouchableOpacity>
               </View>
@@ -184,9 +225,15 @@ export default function Login ({
       </View>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
+    errorText: {
+      color: "red",
+      marginTop: 10,
+      textAlign: "center",
+      fontFamily: FONTS.medium,
+    },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",

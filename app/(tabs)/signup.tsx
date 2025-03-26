@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,12 +10,18 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Button } from "../../components/Button";
 import { router } from "expo-router";
 import BackSvg from "@/components/icons/Back";
 import Carrot from "@/components/icons/Carrot";
 import Svg, { Path } from "react-native-svg";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, resetSignupSuccess } from "@/app/store/authSlice";
+import { RootState, AppDispatch } from "@/app/store/store";
+import { FONTS } from "@/assets/styles";
 
 interface EyeProps {
   color?: string;
@@ -55,7 +61,7 @@ const EyeIcon = ({ color = "#8E8E93", isOpen }: EyeProps) => (
 
 const { width, height } = Dimensions.get("window");
 
-export default function Signup ({
+export default function Signup({
   onBlur,
   onFocus,
   returnKeyType = "done",
@@ -63,20 +69,69 @@ export default function Signup ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-
+  const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
-  const handleLogin = () => {
-    // Implement login logic here
-    console.log("Login attempted with:", email, password);
-    router.push("/");
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    loading,
+    error: storeError,
+    signupSuccess,
+  } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (storeError) {
+      setError(storeError);
+    }
+
+    if (signupSuccess) {
+      Alert.alert(
+        "Registration Successful",
+        "Your account has been created successfully. Please login with your credentials.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              dispatch(resetSignupSuccess());
+              router.push("/login");
+            },
+          },
+        ]
+      );
+    }
+  }, [storeError, signupSuccess]);
+
+  const handleSignup = async () => {
+    if (!userName || !email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    setError(null);
+
+    await dispatch(
+      registerUser({
+        username: userName,
+        email: email,
+        password: password,
+      })
+    );
   };
 
   const goToLogin = () => {
     router.push("/login");
   };
-
-  const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = (e: any) => {
     setIsFocused(true);
@@ -147,7 +202,7 @@ export default function Signup ({
                     style={[styles.input, styles.passwordInput]}
                     value={password}
                     onChangeText={setPassword}
-                    // placeholder="Password"
+                    placeholder="********"
                     keyboardType="default"
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
@@ -188,12 +243,23 @@ export default function Signup ({
                 </TouchableOpacity>
               </View>
 
+              {/* Error Message */}
+              {error && <Text style={styles.errorText}>{error}</Text>}
+
               {/* Login Button */}
               <Button
-                title="Sign Up"
-                onPress={handleLogin}
+                title={loading ? "Creating Account..." : "Sign Up"}
+                onPress={handleSignup}
                 style={styles.button}
+                disabled={loading}
               />
+              {loading && (
+                <ActivityIndicator
+                  style={{ marginTop: 10 }}
+                  color="#55B277"
+                  size="small"
+                />
+              )}
 
               {/* Sign Up Link */}
               <View style={styles.signupContainer}>
@@ -209,9 +275,15 @@ export default function Signup ({
       </View>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
+  errorText: {
+    color: "red",
+    marginTop: 10,
+    textAlign: "center",
+    fontFamily: FONTS.medium,
+  },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",

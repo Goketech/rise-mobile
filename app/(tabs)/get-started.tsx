@@ -3,23 +3,21 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   Image,
-  ImageBackground,
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { Button } from "@/components/Button";
+import { CustomButton } from "../../components/CustomButton";
 import { router } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import CountryFlag from "react-native-country-flag";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import BackSvg from "@/components/icons/Back";
+import { IMAGES, ICONS } from "../../assets";
 
-export default function GetStarted() {
+import { BackButton } from "@/components/Back";
+
+export default function GetStartedScreen() {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const handlePhoneSignIn = () => {
@@ -29,14 +27,9 @@ export default function GetStarted() {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.goBack}>
-          <BackSvg width={100} height={100} fill="#181725" />
-        </TouchableOpacity>
+        <BackButton />
         <View>
-          <Image
-            source={require("@/assets/images/get-started.png")}
-            style={styles.imageContainer}
-          />
+          <Image source={IMAGES.GetStarted} style={styles.imageContainer} />
         </View>
         <View style={styles.content}>
           <View style={styles.titleContainer}>
@@ -57,6 +50,7 @@ export default function GetStarted() {
               keyboardType="phone-pad"
               value={phoneNumber}
               onChangeText={setPhoneNumber}
+              // onBlur={() => Keyboard.dismiss()}
             />
           </View>
 
@@ -65,7 +59,7 @@ export default function GetStarted() {
           </View>
 
           <View style={styles.buttonContainer}>
-            <Button
+            <CustomButton
               title="Continue with Google"
               onPress={handlePhoneSignIn}
               variant="primary"
@@ -78,10 +72,16 @@ export default function GetStarted() {
                   color="#fbfbfb"
                   style={styles.icon}
                 />
+                // <MaterialCommunityIcons
+                //   name="google"
+                //   size={24}
+                //   color="white"
+                //   style={styles.icon}
+                // />
               }
             />
 
-            <Button
+            <CustomButton
               title="Continue with Facebook"
               onPress={handlePhoneSignIn}
               variant="primary"
@@ -93,15 +93,26 @@ export default function GetStarted() {
                   color="#fbfbfb"
                   style={styles.icon}
                 />
+                // <MaterialCommunityIcons
+                //   name="facebook"
+                //   size={24}
+                //   color="#fff"
+                //   style={styles.icon}
+                // />
               }
             />
 
+            {/* <CustomButton
+            title="Continue with Phone"
+            onPress={handlePhoneSignIn}
+            style={styles.phoneButton}
+          /> */}
           </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
   goBack: { padding: 25, position: "absolute", top: 40, left: 10, zIndex: 2 },
@@ -112,6 +123,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBFBFB",
   },
   content: {
+    // marginTop: 20,
+    // alignContent: "center",
+    // justifyContent: "center",
     backgroundColor: "#FBFBFB",
     zIndex: 1,
     flex: 1,
@@ -164,9 +178,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   icon: {
+    // marginLeft: -30,
     marginRight: 25,
   },
   countryCode: {
+    // backgroundColor: "#f5f5f5",
+    // padding: 15,
     borderRadius: 8,
     marginRight: 10,
     justifyContent: "center",
@@ -180,6 +197,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    // backgroundColor: "#f5f5f5",
     padding: 15,
     borderRadius: 8,
     fontSize: 16,

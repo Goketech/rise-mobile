@@ -15,6 +15,7 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -24,6 +25,7 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   textStyle,
   icon,
+  disabled=false
 }) => {
   return (
     <TouchableOpacity
@@ -33,6 +35,7 @@ export const Button: React.FC<ButtonProps> = ({
         style,
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <View style={styles.contentContainer}>
         {icon}

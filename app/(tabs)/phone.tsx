@@ -9,90 +9,59 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
+  ScrollView,
   KeyboardAvoidingView,
-  SafeAreaView,
 } from "react-native";
-import { Button } from "@/components/Button";
+
 import { router } from "expo-router";
-import BackSvg from "@/components/icons/Back";
-import Continue from "@/components/icons/Continue";
-import CountryPicker from "react-native-country-picker-modal";
+
 import CountryFlag from "react-native-country-flag";
 import Next from "@/components/Next";
 
+import { BackButton } from "@/components/Back";
+import { Background } from "../../components/Background";
+
 const { width, height } = Dimensions.get("window");
-export default function Phone() {
+export default function PhoneScreen() {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [countryCode, setCountryCode] = useState("BD"); // Default country
-  const [callingCode, setCallingCode] = useState("880");
-  const [visible, setVisible] = useState(false);
 
   const handleContinue = () => {
     router.push("/otp");
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={{ backgroundColor: "#fcfcfc" }}>
-          <ImageBackground
-            source={require("@/assets/images/blur.png")}
-            style={styles.background}
-          >
+    <View style={{ backgroundColor: "#fcfcfc" }}>
+      <Background>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }}>
             <View>
-              <TouchableOpacity
-                onPress={() => router.back()}
-                style={styles.goBack}
-              >
-                <BackSvg width={100} height={100} fill="#181725" />
-              </TouchableOpacity>
+              <BackButton />
               <View style={styles.content}>
                 <Text style={styles.title}>Enter your mobile number</Text>
                 <Text style={styles.subtitle}>Mobile number </Text>
 
                 <View style={styles.inputContainer}>
-                  <TouchableOpacity
-                    onPress={() => setVisible(true)}
-                    style={styles.countrySelector}
-                  >
-                    <CountryFlag
-                      isoCode={countryCode.toLowerCase()}
-                      size={25}
-                    />
-                    <Text style={styles.countryCodeText}>+{callingCode}</Text>
-                  </TouchableOpacity>
+                  <View style={styles.countryCode}>
+                    <CountryFlag isoCode="bd" size={25} />
+                  </View>
+                  <View style={styles.countryCode}>
+                    <Text style={styles.countryCodeText}>+880</Text>
+                  </View>
                   <TextInput
                     style={styles.input}
+                    // placeholder="Phone Number"
                     keyboardType="phone-pad"
                     value={phoneNumber}
                     onChangeText={setPhoneNumber}
                   />
                 </View>
-
-                <Next onPress={handleContinue} />
               </View>
             </View>
-          </ImageBackground>
-          <CountryPicker
-            visible={visible}
-            withFlag
-            withCallingCode
-            withFilter
-            withAlphaFilter
-            withEmoji
-            onClose={() => setVisible(false)}
-            onSelect={(country) => {
-              setCountryCode(country.cca2);
-              setCallingCode(country.callingCode[0]);
-            }}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+          </ScrollView>
+          <Next onPress={handleContinue} />
+        </KeyboardAvoidingView>
+      </Background>
+    </View>
   );
 }
 
@@ -104,14 +73,18 @@ const styles = StyleSheet.create({
   goBack: { padding: 25, position: "absolute", top: 40, left: 10, zIndex: 2 },
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   content: {
+    // backgroundColor: "#fcfcfc",
     marginTop: 120,
     padding: 20,
     zIndex: 0,
+    // height: '100%'
   },
   title: {
     fontSize: 24,
+    // fontWeight: "bold",
     marginBottom: 30,
     color: "#333",
     fontFamily: "GilroyMedium",
@@ -124,7 +97,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    // backgroundColor: "#fcfcfc",
     padding: 15,
     borderRadius: 8,
     fontSize: 16,
@@ -138,12 +110,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E2E2E2",
   },
-  countrySelector: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 10,
-  },
   countryCode: {
+    // backgroundColor: "#f5f5f5",
+    // padding: 15,
     borderRadius: 8,
     marginRight: 10,
     justifyContent: "center",
@@ -154,6 +123,5 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderLeftColor: "#7C7C7C",
     paddingRight: 10,
-    marginLeft: 5,
   },
 });

@@ -9,17 +9,18 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
-import { Button } from "@/components/Button";
+
 import { router } from "expo-router";
-import BackSvg from "@/components/icons/Back";
-import Continue from "@/components/icons/Continue";
-import CountryFlag from "react-native-country-flag";
 import Next from "@/components/Next";
+import { BackButton } from "@/components/Back";
+import { Background } from "../../components/Background";
 
 const { width, height } = Dimensions.get("window");
 
-export default function OTP (){
+export default function OTPScreen() {
   const [otp, setOtp] = useState("");
   // const inputRefs = useRef<TextInput[]>([]);
 
@@ -29,41 +30,34 @@ export default function OTP (){
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{ backgroundColor: "#fcfcfc" }}>
-        <ImageBackground
-          source={require("@/assets/images/blur.png")}
-          style={styles.background}
-        >
-          <View>
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.goBack}
-            >
-              <BackSvg width={100} height={100} fill="#181725" />
-            </TouchableOpacity>
-            <View style={styles.content}>
-              <Text style={styles.title}>Enter your 4-digit code</Text>
-              <Text style={styles.subtitle}>Code</Text>
+    <View style={{ backgroundColor: "#fcfcfc" }}>
+      <Background>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }}>
+            <View>
+              <BackButton />
+              <View style={styles.content}>
+                <Text style={styles.title}>Enter your 4-digit code</Text>
+                <Text style={styles.subtitle}>Code</Text>
 
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="- - - -"
-                  keyboardType="phone-pad"
-                  value={otp}
-                  onChangeText={setOtp}
-                />
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="- - - -"
+                    keyboardType="phone-pad"
+                    value={otp}
+                    onChangeText={setOtp}
+                  />
+                </View>
               </View>
-
-              <Next text="Resend Code" onPress={handleVerify} />
             </View>
-          </View>
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+          </ScrollView>
+          <Next text="Resend Code" onPress={handleVerify} />
+        </KeyboardAvoidingView>
+      </Background>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   background: {
@@ -97,7 +91,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: "#fcfcfc",
     paddingTop: 15,
     paddingBottom: 15,
     borderRadius: 8,

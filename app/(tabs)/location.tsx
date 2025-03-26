@@ -10,16 +10,17 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { Button } from "@/components/Button";
+import { CustomButton } from "../../components/CustomButton";
+import CustomPicker from "../../components/Picker";
 import { router } from "expo-router";
-import BackSvg from "@/components/icons/Back";
 import Location from "@/components/icons/Location";
-import { Picker } from "@react-native-picker/picker";
-import CustomPicker from "@/components/Picker";
+import { FONTS } from "@/constants/Fonts";
+import { BackButton } from "@/components/Back";
+import { Background } from "../../components/Background";
 
 const { width, height } = Dimensions.get("window");
 
-export default function LocationPage () {
+export default function LocationScreen() {
   const [selectedZone, setSelectedZone] = useState("Bangsree");
   const zones = ["Bangsree", "Sukhumvit", "Silom", "Sathorn"];
 
@@ -50,17 +51,9 @@ export default function LocationPage () {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ backgroundColor: "#fcfcfc" }}>
-        <ImageBackground
-          source={require("@/assets/images/blur.png")}
-          style={styles.background}
-        >
+        <Background>
           <View>
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.goBack}
-            >
-              <BackSvg width={100} height={100} fill="#181725" />
-            </TouchableOpacity>
+            <BackButton />
             <View style={styles.content}>
               <View style={styles.locationContainer}>
                 <Location width={225} height={171} fill="#55B277" />
@@ -89,52 +82,48 @@ export default function LocationPage () {
                 />
               </View>
 
-              <Button
+              <CustomButton
                 title="Submit"
                 onPress={handleSubmit}
                 style={styles.button}
               />
             </View>
           </View>
-        </ImageBackground>
+        </Background>
       </View>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
   background: {
     width: width,
     height: height,
   },
-  goBack: { padding: 25, position: "absolute", top: 40, left: 10, zIndex: 2 },
   container: {
     flex: 1,
     backgroundColor: "#fff",
   },
   content: {
-    // backgroundColor: "#fcfcfc",
-
     marginTop: 100,
     padding: 20,
     zIndex: 0,
-    // alignItems: "center",
     height: "100%",
   },
   title: {
     fontSize: 24,
-    // fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
     color: "#333",
-    fontFamily: "GilroyMedium",
+    fontFamily: FONTS.GilroyMedium,
   },
   subtitle: {
+    lineHeight: 24,
     textAlign: "center",
     fontSize: 16,
     color: "#666",
     marginBottom: 100,
-    fontFamily: "Gilroy",
+    fontFamily: FONTS.Gilroy,
   },
   input: {
     flex: 1,
@@ -150,20 +139,14 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     marginBottom: 30,
-    // borderLeftWidth: 1,
     borderBottomWidth: 1,
     borderBottomColor: "#E2E2E2",
-    // borderLeftColor: "#E2E2E2",
   },
-
   locationContainer: {
-    // flexDirection: "row",
     marginBottom: 30,
     alignItems: "center",
   },
   countryCode: {
-    // backgroundColor: "#f5f5f5",
-    // padding: 15,
     borderRadius: 8,
     marginRight: 10,
     justifyContent: "center",
@@ -179,6 +162,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
     marginBottom: 5,
-    fontFamily: "GilroyMedium",
+    fontFamily: FONTS.GilroyMedium,
   },
 });

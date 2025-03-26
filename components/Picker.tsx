@@ -33,10 +33,6 @@ const CustomPicker = ({ value, onValueChange, options }: Props) => {
 
   return (
     <View style={styles.container}>
-      {/* Label text */}
-      {/* <Text style={styles.label}>Your Zone</Text> */}
-
-      {/* Main picker button */}
       <TouchableOpacity
         style={styles.pickerButton}
         onPress={() => setModalVisible(true)}
@@ -47,35 +43,39 @@ const CustomPicker = ({ value, onValueChange, options }: Props) => {
         </View>
       </TouchableOpacity>
 
-      {/* Bottom border line */}
       <View style={styles.bottomBorder} />
 
-      {/* Modal for options */}
       <Modal
         visible={modalVisible}
         animationType="slide"
         transparent={true}
         onRequestClose={() => setModalVisible(false)}
       >
-        <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={options}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.optionItem}
-                  onPress={() => {
-                    onValueChange(item);
-                    setModalVisible(false);
-                  }}
-                >
-                  <Text style={styles.optionText}>{item}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item}
-            />
-          </View>
-        </SafeAreaView>
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}
+        >
+          <SafeAreaView style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={options}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.optionItem}
+                    onPress={() => {
+                      onValueChange(item);
+                      setModalVisible(false);
+                    }}
+                  >
+                    <Text style={styles.optionText}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item}
+              />
+            </View>
+          </SafeAreaView>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -98,13 +98,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 12,
-    // paddingHorizontal: 4,
   },
   selectedValue: {
     fontSize: 19,
     color: "#828282",
-    // fontWeight: "400",
-    fontFamily: "GilroyMedium", // Using system font, adjust as needed
+    fontFamily: "GilroyMedium",
   },
   bottomBorder: {
     height: 1,
@@ -135,22 +133,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#000000",
   },
+  overlay: {  
+    flex: 1,  
+    justifyContent: "center",  
+    alignItems: "center",  
+    backgroundColor: "rgba(0,0,0,0.3)",  
+  },  
 });
-
-// Usage example:
-const App = () => {
-  const [selectedZone, setSelectedZone] = useState("Bangsree");
-  const zones = ["Bangsree", "Sukhumvit", "Silom", "Sathorn"];
-
-  return (
-    <View style={{ padding: 20 }}>
-      <CustomPicker
-        value={selectedZone}
-        onValueChange={setSelectedZone}
-        options={zones}
-      />
-    </View>
-  );
-};
 
 export default CustomPicker;
